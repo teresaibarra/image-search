@@ -1,34 +1,84 @@
+html, body {
+    font-family: 'Alata';font-size: 22px;
+    height: 100%;
+    margin: 0;
+}
+
+div {
+    display: flex;
+}
+
+h3 {
+    margin: 15px 0 0 0;
+    text-align: center;
+    justify-content: center;
+}
+
+p {
+    margin: 0 0 15px 0;
+    color: grey;
+    text-align: center;
+}
+
 .thumbnail {
-    margin: 10px;
+    margin: 5px;
     width: 100px;
     height: 100px;
-    overflow: hidden;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+#query {
+    padding: 7px 15px;
+}
+
+#images-container {
+    margin-top: 10px;
+    padding: 0 50px 0 50px;
+    max-height: 85vh;
+    justify-content: space-between;
 }
 
 #thumbnail-container {
     width: 50%;
-    display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: space-evenly;
+    align-self: flex-start;
+    flex-shrink: 0;
 }
 
 #image-viewer {
     width: 50%;
+    flex-direction: column;
+    padding: 0 25px 0 25px;
 }
 
 #viewer-text {
     display: none;
 }
 
-#loading-text {
+#loading-image {
     display: none;
-}
-
-#images-container {
-    display: flex;
-    height: 100vh;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 #large-image {
-    width: 100%;
+    height: 70%;
+    object-fit: contain;
+}
+
+#header {
+    margin-top: 10px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 50px 0px 50px;
+    max-height: 15vh;
+}
+
+#error-message {
+    color: darkred;
 }

@@ -1,34 +1,39 @@
-var loadingText = document.getElementById("loading-text");
+var loadingSpinner = document.getElementById("loading-image");
 var viewerText = document.getElementById("viewer-text");
 var largeImage = document.getElementById("large-image");
 var largeImageTitle = document.getElementById("image-title");
+var errorMessage = document.getElementById("error-message");
+var usernameText = document.getElementById("username");
 
 function getQuery() {
-    var requestUrl = "https://api.imgur.com/3/gallery/search/?q=";
+    var requestUrl = "https://api.imgur.com/3/gallery/search/?q_type=png&q_exactly=";
     var queryText = document.getElementById("query").value.trim();
     var thumbnailContainer = document.getElementById("thumbnail-container");
 
-    loadingText.style.display = "flex";
+    loadingSpinner.style.display = "flex";
     viewerText.style.display = "none";
+    errorMessage.textContent = "";
 
     largeImage.setAttribute("src", "")
     largeImageTitle.textContent = "";
+    usernameText.textContent = "";
 
     while(thumbnailContainer.firstChild) {
         thumbnailContainer.removeChild(thumbnailContainer.firstChild);
     }
     
-    
     fetch(requestUrl + queryText, {
+        credentials: 'omit',
         headers: {
             "Authorization": "Client-ID b067d5cb828ec5a",
           }
     })
         .then(response => response.json())
-        .then(data => displayResults(data))
+        .then(function (data) {
+            displayResults(data)
+        })
         .catch(function (error) {
-            console.log("Error: " + error);
-            // TODO: add error to UI
+            errorMessage.textContent = error;
         });
 }
 
@@ -44,39 +49,51 @@ function displayResults(data) {
     thumbnailContainer.style.display = "none";
 
     for (result of results) {
-        if (!result.nsfw && getFileExtension(result.images[0].link) != "mp4") {
+        if (!result.nsfw && result.images && getFileExtension(result.images[0].link) != "mp4") {
             imageCount++;
             var thumbnailWrapper = document.createElement("a");
             thumbnailWrapper.setAttribute("href", "#");  
             thumbnailWrapper.setAttribute("onclick", "openViewer('img-" + result.id +"')");                                         
             var thumbnail = document.createElement("img");
-            thumbnail.setAttribute("src", result.images[0].link);
-            thumbnail.setAttribute("id", "img-" + result.id);
-            thumbnail.setAttribute("title", result.title)
-            thumbnail.setAttribute("class", "thumbnail");
-            thumbnailWrapper.appendChild(thumbnail); 
-            thumbnailContainer.appendChild(thumbnailWrapper);
+            if (result.images) {
+                thumbnail.setAttribute("src", result.images[0].link);
+                thumbnail.setAttribute("id", "img-" + result.id);
+                thumbnail.setAttribute("title", result.title)
+                thumbnail.setAttribute("class", "thumbnail");
+                thumbnail.setAttribute("data-username", result.account_url)
+                thumbnailWrapper.appendChild(thumbnail); 
+                thumbnailContainer.appendChild(thumbnailWrapper);
+            }
 
             thumbnail.onload = function(){
                 imagesLoaded++;
                 if(imagesLoaded == imageCount){
                     thumbnailContainer.style.display = "flex";
-                    loadingText.style.display = "none"; 
                     viewerText.style.display = "flex";
+                    loadingSpinner.style.display = "none"; 
                 }
+            }
+
+            if (imageCount == 30) {
+                break
             }
         }
     }
-    
+
+    if (!imageCount) {
+        loadingSpinner.style.display = "none"; 
+        errorMessage.textContent = "No images found.";
+    }
 }
 
 function openViewer(id) {
     var thumbnail = document.getElementById(id);
     var imageSrc = thumbnail.getAttribute("src");
-    var imageId = thumbnail.getAttribute("id");
     var imageTitle = thumbnail.getAttribute("title");
+    var imageUsername = thumbnail.getAttribute("data-username");
 
     viewerText.style.display = "none";
     largeImage.setAttribute("src", imageSrc);
+    usernameText.textContent = imageUsername;
     largeImageTitle.textContent = imageTitle;
 }
