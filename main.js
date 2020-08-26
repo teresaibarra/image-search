@@ -46,8 +46,7 @@ function displayResults(data) {
     var thumbnailContainer = document.getElementById("thumbnail-container");
     var imagesLoaded = 0;
     var imageCount = 0;
-    thumbnailContainer.style.display = "none";
-
+    
     for (result of results) {
         if (!result.nsfw && result.images && getFileExtension(result.images[0].link) != "mp4") {
             imageCount++;
@@ -56,6 +55,8 @@ function displayResults(data) {
             thumbnailWrapper.setAttribute("onclick", "openViewer('img-" + result.id +"')");                                         
             var thumbnail = document.createElement("img");
             if (result.images) {
+                thumbnail.addEventListener("load", fadeIn);
+                thumbnail.style.opacity = "0";
                 thumbnail.setAttribute("src", result.images[0].link);
                 thumbnail.setAttribute("id", "img-" + result.id);
                 thumbnail.setAttribute("title", result.title)
@@ -68,7 +69,6 @@ function displayResults(data) {
             thumbnail.onload = function(){
                 imagesLoaded++;
                 if(imagesLoaded == imageCount){
-                    thumbnailContainer.style.display = "flex";
                     viewerText.style.display = "flex";
                     loadingSpinner.style.display = "none"; 
                 }
@@ -84,6 +84,11 @@ function displayResults(data) {
         loadingSpinner.style.display = "none"; 
         errorMessage.textContent = "No images found.";
     }
+}
+
+function fadeIn() {
+    this.style.transition = "opacity 2s";
+    this.style.opacity = "1";
 }
 
 function openViewer(id) {
