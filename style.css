@@ -21,17 +21,26 @@ p {
     text-align: center;
 }
 
-.thumbnail {
-    margin: 5px;
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 5px;
+/* 
+* HEADER ELEMENTS 
+*/
+
+#header {
+    margin-top: 10px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 50px 0 50px;
+    max-height: 15vh;
 }
 
 #query {
     padding: 7px 15px;
 }
+
+/* 
+* IMAGES CONTAINER
+*/
 
 #images-container {
     margin-top: 10px;
@@ -40,6 +49,10 @@ p {
     justify-content: space-between;
 }
 
+/* 
+* THUMBNAILS
+*/
+
 #thumbnail-container {
     width: 50%;
     flex-wrap: wrap;
@@ -47,6 +60,18 @@ p {
     align-self: flex-start;
     flex-shrink: 0;
 }
+
+.thumbnail {
+    margin: 5px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* 
+* LARGE IMAGE VIEWER
+*/
 
 #image-viewer {
     width: 50%;
@@ -58,28 +83,23 @@ p {
     display: none;
 }
 
+#large-image {
+    height: 70%;
+    object-fit: contain;
+}
+
+/* 
+* MISC
+*/
+
+#error-message {
+    color: darkred;
+}
+
 #loading-spinner {
     display: none;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-}
-
-#large-image {
-    height: 70%;
-    object-fit: contain;
-}
-
-#header {
-    margin-top: 10px;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0px 50px 0px 50px;
-    max-height: 15vh;
-}
-
-#error-message {
-    color: darkred;
 }

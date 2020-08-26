@@ -20,7 +20,7 @@ var thumbnailContainer = document.getElementById("thumbnail-container");
 
 // Return the file extension of the given filename
 function getFileExtension(filename) {
-    return filename.split('.').pop()
+    return filename.split('.').pop();
 }
 
 // Event handler that will fade in an element
@@ -35,7 +35,7 @@ function clearInterface() {
     viewerText.style.display = "none";
     errorMessage.textContent = "";
 
-    largeImage.setAttribute("src", "")
+    largeImage.setAttribute("src", "");
     largeImageTitle.textContent = "";
     usernameText.textContent = "";
 
@@ -68,7 +68,7 @@ function getQuery() {
     })
         .then(response => response.json())
         .then(function (data) {
-            displayResults(data)
+            displayResults(data);
         })
         .catch(function (error) {
             errorMessage.textContent = error; // Show any errors to user if query is invalid
@@ -80,7 +80,7 @@ function displayResults(data) {
     var results = data.data;
     var imageCount = 0;
 
-    for (result of results) {
+    for (var result of results) {
         if (!result.nsfw && result.images && getFileExtension(result.images[0].link) != "mp4") {
             imageCount++;
 
