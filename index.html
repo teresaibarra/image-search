@@ -6,19 +6,19 @@
     <meta charset="utf-8">
     <link href='https://fonts.googleapis.com/css?family=Alata' rel='stylesheet'>
     <link href="./style.css" rel="stylesheet" type="text/css">
-    
 </head>
 
 <body>
     <div id="header">
         <h2>Image Query & Viewer Tool</h2>
-        <div><form onsubmit="getQuery(); return false;">
+        <div>
+            <form onsubmit="getQuery(); return false;">
             <input id="query" placeholder="Search for anything!" type="text"> 
             <input type="submit" value="Submit">
-        </form></div>
-        
+            </form>
+        </div>
     </div>
-    <img id="loading-image" src="assets/spinner.svg" alt="Loading images...">
+    <img id="loading-spinner" src="assets/spinner.svg" alt="Loading images...">
     <h3 id="error-message"></h3>
     <div id="images-container">
         <div id="thumbnail-container"></div>
@@ -30,4 +30,4 @@
         </div>
     </div>
     <script src="main.js" type="text/javascript"></script>
-    </body>
+</body>

@@ -1,5 +1,6 @@
 html, body {
-    font-family: 'Alata';font-size: 22px;
+    font-family: 'Alata';
+    font-size: 22px;
     height: 100%;
     margin: 0;
 }
@@ -57,7 +58,7 @@ p {
     display: none;
 }
 
-#loading-image {
+#loading-spinner {
     display: none;
     position: absolute;
     top: 50%;

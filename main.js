@@ -1,15 +1,36 @@
-var loadingSpinner = document.getElementById("loading-image");
+/**
+ * 
+ * DOCUMENT ELEMENTS
+ * 
+ */
+
+var loadingSpinner = document.getElementById("loading-spinner");
 var viewerText = document.getElementById("viewer-text");
 var largeImage = document.getElementById("large-image");
 var largeImageTitle = document.getElementById("image-title");
 var errorMessage = document.getElementById("error-message");
 var usernameText = document.getElementById("username");
+var thumbnailContainer = document.getElementById("thumbnail-container");
 
-function getQuery() {
-    var requestUrl = "https://api.imgur.com/3/gallery/search/?q_type=png&q_exactly=";
-    var queryText = document.getElementById("query").value.trim();
-    var thumbnailContainer = document.getElementById("thumbnail-container");
+/**
+ * 
+ * HELPER FUNCTIONS
+ * 
+ */
 
+// Return the file extension of the given filename
+function getFileExtension(filename) {
+    return filename.split('.').pop()
+}
+
+// Event handler that will fade in an element
+function fadeIn() {
+    this.style.transition = "opacity 2s";
+    this.style.opacity = "1";
+}
+
+// Hides all elements and displays loading spinner, in case of prior search results
+function clearInterface() {
     loadingSpinner.style.display = "flex";
     viewerText.style.display = "none";
     errorMessage.textContent = "";
@@ -18,12 +39,29 @@ function getQuery() {
     largeImageTitle.textContent = "";
     usernameText.textContent = "";
 
+    // Remove all thumbnails from thumbnail container
     while(thumbnailContainer.firstChild) {
         thumbnailContainer.removeChild(thumbnailContainer.firstChild);
     }
+}
+
+/**
+ * 
+ * GENERAL FUNCTIONS
+ * 
+ */
+
+ // Gets query from input text, clears interface, sends request, and then processes it
+function getQuery() {
+    // We ask for .png files to reduce errors with displaying mp4 files
+    var requestUrl = "https://api.imgur.com/3/gallery/search/?q_type=png&q_exactly=";
+    // Clean up input text before submitting request
+    var queryText = document.getElementById("query").value.trim();
+
+    clearInterface();
     
     fetch(requestUrl + queryText, {
-        credentials: 'omit',
+        credentials: 'omit', // Reduces likelihood of SameSite cookie error
         headers: {
             "Authorization": "Client-ID b067d5cb828ec5a",
           }
@@ -33,71 +71,67 @@ function getQuery() {
             displayResults(data)
         })
         .catch(function (error) {
-            errorMessage.textContent = error;
+            errorMessage.textContent = error; // Show any errors to user if query is invalid
         });
 }
 
-function getFileExtension(filename) {
-    return filename.split('.').pop()
-}
-
+// Show search results from Imgur API in thumbnail gallery
 function displayResults(data) {
     var results = data.data;
-    var thumbnailContainer = document.getElementById("thumbnail-container");
-    var imagesLoaded = 0;
     var imageCount = 0;
-    
+
     for (result of results) {
         if (!result.nsfw && result.images && getFileExtension(result.images[0].link) != "mp4") {
             imageCount++;
+
+            // Create a thumbnail wrapper that allows the images to be clicked and opens
+            // image in a larger viewer
             var thumbnailWrapper = document.createElement("a");
             thumbnailWrapper.setAttribute("href", "#");  
-            thumbnailWrapper.setAttribute("onclick", "openViewer('img-" + result.id +"')");                                         
-            var thumbnail = document.createElement("img");
-            if (result.images) {
-                thumbnail.addEventListener("load", fadeIn);
-                thumbnail.style.opacity = "0";
-                thumbnail.setAttribute("src", result.images[0].link);
-                thumbnail.setAttribute("id", "img-" + result.id);
-                thumbnail.setAttribute("title", result.title)
-                thumbnail.setAttribute("class", "thumbnail");
-                thumbnail.setAttribute("data-username", result.account_url)
-                thumbnailWrapper.appendChild(thumbnail); 
-                thumbnailContainer.appendChild(thumbnailWrapper);
-            }
+            thumbnailWrapper.setAttribute("onclick", "openViewer('img-" + result.id +"')");          
 
-            thumbnail.onload = function(){
-                imagesLoaded++;
-                if(imagesLoaded == imageCount){
-                    viewerText.style.display = "flex";
-                    loadingSpinner.style.display = "none"; 
-                }
-            }
+            // Store information about the thumbnail to be shown in larger view
+            var thumbnail = document.createElement("img");
+            thumbnail.setAttribute("class", "thumbnail");
+            thumbnail.setAttribute("id", "img-" + result.id);
+            thumbnail.setAttribute("src", result.images[0].link);
+            thumbnail.setAttribute("title", result.title);
+            thumbnail.setAttribute("data-username", result.account_url);
+
+            // When the image loads, fade it in
+            thumbnail.addEventListener("load", fadeIn);
+            thumbnail.style.opacity = "0";
+
+            thumbnailWrapper.appendChild(thumbnail); 
+            thumbnailContainer.appendChild(thumbnailWrapper);
 
             if (imageCount == 30) {
-                break
+                // Show 30 image thumbnails max
+                break;
             }
         }
     }
 
-    if (!imageCount) {
-        loadingSpinner.style.display = "none"; 
+    if (imageCount) {
+        // If relevant results were found, show instructions for larger images
+        viewerText.style.display = "flex";
+    }
+    else {
+        // If relevant results were not found, show error message to user
         errorMessage.textContent = "No images found.";
     }
+
+    loadingSpinner.style.display = "none"; 
 }
 
-function fadeIn() {
-    this.style.transition = "opacity 2s";
-    this.style.opacity = "1";
-}
-
+// If an image is clicked, show a larger version of the image with its title and the uploader's username
 function openViewer(id) {
     var thumbnail = document.getElementById(id);
     var imageSrc = thumbnail.getAttribute("src");
     var imageTitle = thumbnail.getAttribute("title");
     var imageUsername = thumbnail.getAttribute("data-username");
 
-    viewerText.style.display = "none";
+    viewerText.style.display = "none"; // Remove larger view instructions to make space for image
     largeImage.setAttribute("src", imageSrc);
     usernameText.textContent = imageUsername;
     largeImageTitle.textContent = imageTitle;
