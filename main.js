@@ -4,13 +4,13 @@
  * 
  */
 
-var loadingSpinner = document.getElementById("loading-spinner");
-var viewerText = document.getElementById("viewer-text");
+var viewerInstructions = document.getElementById("viewer-instructions");
 var largeImage = document.getElementById("large-image");
 var largeImageTitle = document.getElementById("image-title");
+var largeImageUsername = document.getElementById("image-username");
+var thumbnailContainer = document.getElementById("thumbnails-container");
 var errorMessage = document.getElementById("error-message");
-var usernameText = document.getElementById("username");
-var thumbnailContainer = document.getElementById("thumbnail-container");
+var loadingSpinner = document.getElementById("loading-spinner");
 
 /**
  * 
@@ -29,15 +29,15 @@ function fadeIn() {
     this.style.opacity = "1";
 }
 
-// Hides all elements and displays loading spinner, in case of prior search results
+// Hides all search results and displays loading spinner
 function clearInterface() {
     loadingSpinner.style.display = "flex";
-    viewerText.style.display = "none";
+    viewerInstructions.style.display = "none";
     errorMessage.textContent = "";
 
     largeImage.setAttribute("src", "");
     largeImageTitle.textContent = "";
-    usernameText.textContent = "";
+    largeImageUsername.textContent = "";
 
     // Remove all thumbnails from thumbnail container
     while(thumbnailContainer.firstChild) {
@@ -88,7 +88,7 @@ function displayResults(data) {
             // image in a larger viewer
             var thumbnailWrapper = document.createElement("a");
             thumbnailWrapper.setAttribute("href", "#");  
-            thumbnailWrapper.setAttribute("onclick", "openViewer('img-" + result.id +"')");          
+            thumbnailWrapper.setAttribute("onclick", "openImageViewer('img-" + result.id +"')");          
 
             // Store information about the thumbnail to be shown in larger view
             var thumbnail = document.createElement("img");
@@ -114,7 +114,7 @@ function displayResults(data) {
 
     if (imageCount) {
         // If relevant results were found, show instructions for larger images
-        viewerText.style.display = "flex";
+        viewerInstructions.style.display = "flex";
     }
     else {
         // If relevant results were not found, show error message to user
@@ -125,14 +125,14 @@ function displayResults(data) {
 }
 
 // If an image is clicked, show a larger version of the image with its title and the uploader's username
-function openViewer(id) {
+function openImageViewer(id) {
     var thumbnail = document.getElementById(id);
     var imageSrc = thumbnail.getAttribute("src");
     var imageTitle = thumbnail.getAttribute("title");
     var imageUsername = thumbnail.getAttribute("data-username");
 
-    viewerText.style.display = "none"; // Remove larger view instructions to make space for image
+    viewerInstructions.style.display = "none"; // Remove larger view instructions to make space for image
     largeImage.setAttribute("src", imageSrc);
-    usernameText.textContent = imageUsername;
+    largeImageUsername.textContent = imageUsername;
     largeImageTitle.textContent = imageTitle;
 }

@@ -39,10 +39,10 @@ p {
 }
 
 /* 
-* IMAGES CONTAINER
+* SEARCH RESULTS CONTAINER
 */
 
-#images-container {
+#results-container {
     margin-top: 10px;
     padding: 0 50px 0 50px;
     max-height: 85vh;
@@ -53,7 +53,7 @@ p {
 * THUMBNAILS
 */
 
-#thumbnail-container {
+#thumbnails-container {
     width: 50%;
     flex-wrap: wrap;
     justify-content: space-evenly;
@@ -79,7 +79,7 @@ p {
     padding: 0 25px 0 25px;
 }
 
-#viewer-text {
+#viewer-instructions {
     display: none;
 }
 
